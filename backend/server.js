@@ -7,6 +7,7 @@ import { connectDb } from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
 import messageRouter from "./routes/messageRoutes.js";
 import { Server } from "socket.io";
+import logger from "./logger/logger.js";
 
 // create express app and http server
 const app = express();
@@ -58,4 +59,7 @@ app.use("/api/messages", messageRouter);
 app.use("/api/status", (_, res) => res.send("Server is live 😘"));
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log("Server is running on PORT:" + PORT));
+server.listen(PORT, () => {
+  logger.info(`Server is running on PORT: ${PORT}`);
+  console.log("Server is running on PORT:" + PORT);
+});

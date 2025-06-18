@@ -1,4 +1,5 @@
 import cloudinary from "../config/cloudinary.js";
+import logger from "../logger/logger.js";
 import Message from "../models/messageModel.js";
 import User from "../models/userModel.js";
 import { io, userSocketMap } from "../server.js";
@@ -22,18 +23,6 @@ export const getUsers = async (req, res) => {
       });
       unseenMessages[user._id] = count;
     }
-    /*
-    const promises = users.map(async (user) => {
-      const messages = await Message.find({
-        senderId: user._id,
-        receiverId: userId,
-        seen: false,
-      });
-      if (messages.length > 0) {
-        unseenMessages[user._id] = messages.length;
-      }
-    });
-    await Promise.all(promises);*/
 
     res.status(200).json({
       success: true,
@@ -41,7 +30,7 @@ export const getUsers = async (req, res) => {
       unseenMessages,
     });
   } catch (error) {
-    console.log(error);
+    logger.error(`Get users error: ${error.message}`);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -68,7 +57,7 @@ export const getMessages = async (req, res) => {
 
     res.status(200).json({ success: true, messages });
   } catch (error) {
-    console.log(error);
+    logger.error(`Get messages error: ${error.message}`);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -83,7 +72,7 @@ export const markMessageAsSeen = async (req, res) => {
     await Message.findByIdAndUpdate(id, { seen: true });
     res.status(200).json({ success: true });
   } catch (error) {
-    console.log(error);
+    logger.error(`Mark message as seen error: ${error.message}`);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -119,7 +108,7 @@ export const sendMessage = async (req, res) => {
 
     res.status(201).json({ success: true, newMessage });
   } catch (error) {
-    console.log(error);
+    logger.error(`Send message error: ${error.message}`);
     res.status(500).json({
       success: false,
       message: error.message,

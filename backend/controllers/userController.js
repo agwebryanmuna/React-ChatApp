@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../config/cloudinary.js";
+import logger from "../logger/logger.js";
 
 const createToken = (userId) =>
   jwt.sign({ userId }, process.env.CHAT_APP_SECRET);
@@ -41,8 +42,9 @@ export const signup = async (req, res) => {
       message: "Account created successfully",
       token,
     });
+    logger.info(`User signup: ${newUser._id}`, { email });
   } catch (error) {
-    console.log(error);
+    logger.error(`Signup error: ${error.message}`);
     res.status(400).json({ success: false, message: error.message });
   }
 };
@@ -67,7 +69,7 @@ export const login = async (req, res) => {
       .status(200)
       .json({ success: true, userData, token, message: "Login successful" });
   } catch (error) {
-    console.log(error);
+    logger.error(`Login error: ${error.message}`);
     res.status(400).json({ success: false, message: error.message });
   }
 };
@@ -101,8 +103,9 @@ export const updateProfile = async (req, res) => {
     }
 
     res.status(200).json({ success: true, user: updateUser });
+    logger.info(`User profile update: ${updateUser._id}`, { email });
   } catch (error) {
-    console.log(error);
+    logger.error(`Update profile error: ${error.message}`);
     res.status(400).json({ success: false, message: error.message });
   }
 };
