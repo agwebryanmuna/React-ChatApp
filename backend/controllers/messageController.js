@@ -6,7 +6,7 @@ import { io, userSocketMap } from "../server.js";
 // get all users except the logged in user
 export const getUsers = async (req, res) => {
   try {
-    const { _id: userId } = req.body.user;
+    const { _id: userId } = req.user;
 
     // get all users except current logged in user
     const users = await User.find({ _id: { $ne: userId } }).select("-password");
@@ -53,7 +53,7 @@ export const getUsers = async (req, res) => {
 export const getMessages = async (req, res) => {
   try {
     const { id: selectedUserId } = req.params;
-    const { _id: currentUserId } = req.body.user;
+    const { _id: currentUserId } = req.user;
 
     const messages = await Message.find({
       $or: [

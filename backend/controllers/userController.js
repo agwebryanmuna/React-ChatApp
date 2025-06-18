@@ -74,14 +74,14 @@ export const login = async (req, res) => {
 
 // check if user is authenticated
 export const checkAuth = (req, res) => {
-  res.status(200).json({ success: true, user: req.body.user });
+  res.status(200).json({ success: true, user: req.user });
 };
 
 // Update user profile details
 export const updateProfile = async (req, res) => {
   try {
     const { profilePic, bio, fullName } = req.body;
-    const { _id: userId } = req.body.user;
+    const { _id: userId } = req.user;
     let updateUser;
 
     if (!profilePic) {

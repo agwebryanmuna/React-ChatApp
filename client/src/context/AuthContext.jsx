@@ -13,7 +13,7 @@ export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [authUser, setAuthUser] = useState([]);
+  const [authUser, setAuthUser] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [socket, setSocket] = useState(null);
 
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("token", data.token);
         toast.success(data.message);
       } else {
-        toast.error(error.message);
+        toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.message);
@@ -95,8 +95,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["token"] = token;
+      checkAuth();
     }
-    checkAuth();
   }, []);
 
   const value = {
