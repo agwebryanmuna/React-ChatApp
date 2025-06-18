@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }) => {
       axios.defaults.headers.common["token"] = token;
       checkAuth();
     }
-  }, []);
+  }, [token]);
 
   const value = {
     axios,
