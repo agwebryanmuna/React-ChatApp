@@ -9,6 +9,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
+  const [isSubmittingToBackend, setIsSubmittingToBackend] = useState(false);
 
   const { login } = useContext(AuthContext);
 
@@ -20,18 +21,27 @@ const LoginPage = () => {
       return;
     }
 
+    setIsSubmittingToBackend(true);
+
     login(currentState === "Sign up" ? "signup" : "login", {
       fullName,
       email,
       password,
       bio,
     });
+
+    setIsSubmittingToBackend(false);
   };
 
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
       {/* --------- left start */}
-      <img src={assets.logo_big} alt="Logo" className="w-[min(30vw, 250px)]" />
+      <img
+        loading="lazy"
+        src={assets.logo_big}
+        alt="Logo"
+        className="w-[min(30vw, 250px)]"
+      />
       {/* --------- right start */}
       <form
         onSubmit={onSubmitHandler}
@@ -95,17 +105,24 @@ const LoginPage = () => {
 
         <button
           type="submit"
-          className="py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md cursor-pointer"
+          disabled={isSubmittingToBackend}
+          className={`py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md  ${
+            isSubmittingToBackend
+              ? "opacity-50 cursor-not-allowed"
+              : "cursor-pointer"
+          }`}
         >
           {currentState === "Sign up" ? "Create Account" : "Login Now"}
         </button>
 
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <input type="checkbox" id="terms" />
-          <label htmlFor="terms" className="ml-2">
-            Agree to the terms of use & policy.
-          </label>
-        </div>
+        {currentState === "Sign up" && (
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <input type="checkbox" id="terms" />
+            <label htmlFor="terms" className="ml-2">
+              Agree to the terms of use & policy.
+            </label>
+          </div>
+        )}
 
         <div className="flex flex-col gap-2">
           {currentState === "Sign up" ? (

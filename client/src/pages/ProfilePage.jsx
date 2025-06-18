@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
+import imageCompression from "browser-image-compression";
 import assets from "../assets/assets";
 import { AuthContext } from "../context/AuthContext";
 
@@ -9,9 +10,11 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState(authUser.fullName);
   const [bio, setBio] = useState(authUser.bio);
+  const [isSubmittingToBackend, setIsSubmittingToBackend] = useState(false);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    setIsSubmittingToBackend(true);
 
     if (!selectedImage) {
       await updateProfile({ fullName: name, bio });
@@ -19,14 +22,26 @@ const ProfilePage = () => {
       return;
     }
 
-    const reader = new FileReader();
-    reader.readAsDataURL(selectedImage);
-    reader.onload = async () => {
-      const base64Image = reader.result;
-
-      await updateProfile({ profilePic: base64Image, fullName: name, bio });
-      navigate("/");
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1020,
+      useWebWorker: true,
     };
+    try {
+      const compressedImage = await imageCompression(selectedImage, options);
+      // Convert compressed image to base64
+      const reader = new FileReader();
+      reader.readAsDataURL(compressedImage);
+      reader.onload = async () => {
+        const base64Image = reader.result;
+        await updateProfile({ profilePic: base64Image, fullName: name, bio });
+        navigate("/");
+        setIsSubmittingToBackend(false);
+      };
+    } catch (error) {
+      console.log(error);
+      setIsSubmittingToBackend(false);
+    }
   };
 
   return (
@@ -49,6 +64,7 @@ const ProfilePage = () => {
               hidden
             />
             <img
+              loading="lazy"
               className={`size-12 ${selectedImage && "rounded-full"}`}
               src={
                 selectedImage
@@ -77,13 +93,19 @@ const ProfilePage = () => {
             className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
           />
           <button
+            disabled={isSubmittingToBackend}
             type="submit"
-            className="p-2 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-full text-lg cursor-pointer"
+            className={`p-2 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-full text-lg ${
+              isSubmittingToBackend
+                ? "opacity-50 cursor-not-allowed"
+                : "cursor-pointer"
+            }`}
           >
             Save
           </button>
         </form>
         <img
+          loading="lazy"
           src={authUser?.profilePic || assets.logo_icon}
           alt="profile image"
           className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${

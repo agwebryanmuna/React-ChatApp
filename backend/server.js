@@ -1,6 +1,7 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
+import compression from "compression";
 import http from "http";
 import { connectDb } from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
@@ -43,7 +44,9 @@ io.on("connection", (socket) => {
 });
 
 // middleware setup
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json({ limit: "3mb" }));
+// compress all responses
+app.use(compression());
 app.use(cors());
 
 // connect to database

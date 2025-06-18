@@ -30,6 +30,7 @@ const RightSidebar = () => {
             src={selectedUser?.profilePic || assets.avatar_icon}
             alt="Profile"
             className="w-20 aspect-[1/1] rounded-full"
+            loading="lazy"
           />
           <h1 className="px-10 text-xl font-medium mx-auto flex items-center gap-2">
             {onlineUsers.includes(selectedUser._id) && (
