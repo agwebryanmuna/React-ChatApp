@@ -2,6 +2,8 @@
 
 QuickChat is a modern, full-stack real-time chat application designed for seamless, secure, and engaging communication. Built with a focus on performance, scalability, and user experience, QuickChat demonstrates best practices in both frontend and backend development using the latest technologies.
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Site-brightgreen?style=for-the-badge)](https://react-chat-app-pink.vercel.app/)
+
 ## 🚀 Features
 
 - **Real-Time Messaging:** Instant chat powered by Socket.IO for a smooth, live experience.
